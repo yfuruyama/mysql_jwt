@@ -20,7 +20,8 @@ How to install
 ---
 
 ```sh
-$ git submodule init
+$ git clone git@github.com:addsict/mysql_jwt.git && cd mysql_jwt
+$ git submodule init && git submodule update
 
 # on OSX
 $ g++ -o mysql_jwt.so mysql_jwt.cc `mysql_config --cflags` -bundle
