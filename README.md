@@ -1,4 +1,4 @@
-MySQL UDF plugin for decoding JWT
+mysql_jwt
 ===
 mysql_jwt is a MySQL UDF plugin for decoding JSON Web Token(JWT).
 
