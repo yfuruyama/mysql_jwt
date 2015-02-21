@@ -8,11 +8,14 @@ Decode JWT in the query
 ```sh
 > SET @token = 'eyJhbGciOiJub25lIn0.eyJzdWIiOjEyMzQ1Njc4OTAsImlzcyI6ImV4YW1wbGUuY29tIn0.';
 > SELECT decode_jwt(@token);
-*************************** 1. row ***************************
-decode_jwt(@token): {
-    "iss": example.com
-    "sub": 1234567890
-}
++------------------------+
+|   decode_jwt(@token)   |
++------------------------+
+| {                      |
+|     "iss": example.com |
+|     "sub": 1234567890  |
+| }                      |
++------------------------+
 1 row in set (0.00 sec)
 ```
 
