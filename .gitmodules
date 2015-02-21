@@ -1,0 +1,6 @@
+[submodule "picojson"]
+	path = picojson
+	url = git@github.com:kazuho/picojson.git
+[submodule "base64"]
+	path = base64
+	url = git@github.com:tkislan/base64.git
