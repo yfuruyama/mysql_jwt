@@ -4,18 +4,16 @@ mysql_jwt is a MySQL UDF plugin for decoding JSON Web Token(JWT).
 
 Decode JWT in the query
 ---
+After installing this plugin, you can use `decode_jwt` function.
 
 ```
 > SET @token = 'eyJhbGciOiJub25lIn0.eyJzdWIiOjEyMzQ1Njc4OTAsImlzcyI6ImV4YW1wbGUuY29tIn0.';
-> SELECT decode_jwt(@token);
-+------------------------+
-|   decode_jwt(@token)   |
-+------------------------+
-| {                      |
-|     "iss": example.com |
-|     "sub": 1234567890  |
-| }                      |
-+------------------------+
+> SELECT decode_jwt(@token)\G
+*************************** 1. row ***************************
+decode_jwt(@token): {
+    "iss": "example.com",
+    "sub": 1234567890,
+}
 1 row in set (0.00 sec)
 ```
 
