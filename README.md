@@ -7,13 +7,29 @@ Decode JWT in the query
 After installing this plugin, you can use `decode_jwt` function.
 
 ```
-> SET @token = 'eyJhbGciOiJub25lIn0.eyJzdWIiOjEyMzQ1Njc4OTAsImlzcyI6ImV4YW1wbGUuY29tIn0.';
+> SET @token = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5jb20iLCJzdWIiOiIxMjM0NTY3ODkwIiwiYXVkIjoiaHR0cDovL2FwcC5leGFtcGxlLmNvbSIsImV4cCI6MTQyNDQzNzQ5MSwiaWF0IjoxNDI0NDM2NTkxLCJqdGkiOiIxMjM0NTY3ODkwIn0.V0SEo1Y1kurWp2bSYU9gEQ2K9nweII_RNIlYEBRHdWY';
 > SELECT decode_jwt(@token)\G
 *************************** 1. row ***************************
-decode_jwt(@token): {
-    "iss": "example.com",
-    "sub": 1234567890,
-}
+decode_jwt(@token): {"iss":"http://example.com","sub":"1234567890","aud":"http://app.example.com","exp":1424437491,"iat":1424436591,"jti":"1234567890"}
+1 row in set (0.00 sec)
+```
+
+The claim keyword can be specified at 2nd argument of `decode_jwt()`.
+```
+> SELECT decode_jwt(@token, 'iss');
++---------------------------+
+| decode_jwt(@token, 'iss') |
++---------------------------+
+| http://example.com        |
++---------------------------+
+1 row in set (0.00 sec)
+
+> SELECT FROM_UNIXTIME(decode_jwt(@token, 'exp'));
++------------------------------------------+
+| FROM_UNIXTIME(decode_jwt(@token, 'exp')) |
++------------------------------------------+
+| 2015-02-20 22:04:51                      |
++------------------------------------------+
 1 row in set (0.00 sec)
 ```
 
