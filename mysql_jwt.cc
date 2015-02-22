@@ -52,12 +52,15 @@ int format_pretty(picojson::object obj, std::string *out)
 
 my_bool decode_jwt_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
-  if (args->arg_count != 1) {
-    strcpy(message, "Incorrect parameter count in the call to function 'decode_jwt'");
+  if (args->arg_count != 1 && args->arg_count != 2) {
+    strcpy(message, "decode_jwt() can accept one or two arguments");
     return 1;
   }
   if (args->arg_type[0] != STRING_RESULT) {
-    strcpy(message, "1st argument of 'decode_jwt' should be string");
+    strcpy(message, "1st argument of decode_jwt() should be string");
+    return 1;
+  } else if (args->arg_count == 2 && args->arg_type[1] != STRING_RESULT) {
+    strcpy(message, "2nd argument of decode_jwt() should be string");
     return 1;
   }
 
@@ -83,26 +86,33 @@ char *decode_jwt(UDF_INIT *initid, UDF_ARGS *args,
     return NULL;
   }
 
-  std::string claim;
-  bool is_success = Base64::Decode(claim_part, &claim);
+  std::string decoded;
+  bool is_success = Base64::Decode(claim_part, &decoded);
   if (!is_success) {
     *is_null = 1;
     return NULL;
   }
 
-  picojson::value v;
-  std::string err = picojson::parse(v, claim);
-  if (!err.empty()) {
-    *is_null = 1;
-    return NULL;
+  if (args->arg_count == 2) {
+    std::string claim_key = (char*)args->args[1];
+
+    picojson::value v;
+    std::string err = picojson::parse(v, decoded);
+    if (!err.empty()) {
+      *is_null = 1;
+      return NULL;
+    }
+
+    picojson::object obj = v.get<picojson::object>();
+    std::string claim = obj[claim_key].to_str();
+    strcpy(result, claim.c_str());
+    *res_length = claim.size();
+    // std::string out; 
+    // int out_len = format_pretty(obj, &out);
+  } else {
+    strcpy(result, decoded.c_str());
+    *res_length = decoded.size();
   }
-
-  picojson::object obj = v.get<picojson::object>();
-  std::string out; 
-  int out_len = format_pretty(obj, &out);
-
-  strcpy(result, out.c_str());
-  *res_length = out_len;
 
   return result;
 }
