@@ -27,29 +27,6 @@ std::string get_claim_part(std::string jwt)
   return claim;
 }
 
-int format_pretty(picojson::object obj, std::string *out)
-{
-  (*out) += "{\n";
-
-  const char* keys[] = {"iss", "sub", "aud", "exp", "iat", "jti"};
-  for (int i = 0, l = sizeof(keys) / sizeof(char*); i < l; ++i) {
-    const char* key = keys[i];
-    if (!obj[key].is<picojson::null>()) {
-      char buf[1024];
-      if (obj[key].is<std::string>()) {
-        sprintf(buf, "    \"%s\": \"%s\",\n", key, obj[key].to_str().c_str());
-      } else {
-        sprintf(buf, "    \"%s\": %s,\n", key, obj[key].to_str().c_str());
-      }
-      (*out) += buf;
-    }
-  }
-
-  (*out) += "}";
-
-  return out->size();
-}
-
 my_bool decode_jwt_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
   if (args->arg_count != 1 && args->arg_count != 2) {
@@ -107,8 +84,6 @@ char *decode_jwt(UDF_INIT *initid, UDF_ARGS *args,
     std::string claim = obj[claim_key].to_str();
     strcpy(result, claim.c_str());
     *res_length = claim.size();
-    // std::string out; 
-    // int out_len = format_pretty(obj, &out);
   } else {
     strcpy(result, decoded.c_str());
     *res_length = decoded.size();
